@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:36:01 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/14 16:40:48 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/14 18:02:46 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int g_stop_code = PROCESS;
 
 void	print_struct(t_malcolm *malcolm);
 
+
 int main(int argc, char **argv)
 {
 	(void)argc;
@@ -24,18 +25,23 @@ int main(int argc, char **argv)
 	
 	init(&malcolm);
 	parsing(argc, argv, malcolm);
-	// init_socket(malcolm);
+	print_struct(malcolm);
+	
+	get_arp_interfaces(malcolm);
+	init_arp_socket(malcolm, malcolm->ifa_name);
 	// ft_malcolm(malcolm);
 
-	print_struct(malcolm);
 	free_all(NOT_EXIT, malcolm);
 	return (0);
 }
 
 void	print_struct(t_malcolm *malcolm)
 {
-	printf("src_ip:   %s\n", malcolm->src_ip);
-	printf("src_mac:  %s\n", malcolm->src_mac);
-	printf("trgt_ip:  %s\n", malcolm->trgt_ip);
-	printf("trgt_mac: %s\n", malcolm->trgt_mac);
+	printf("------ Struct ------\n");
+	printf("|   src_ip:   %s\n", malcolm->src_ip);
+	printf("|   src_mac:  %s\n", malcolm->src_mac);
+	printf("|   trgt_ip:  %s\n", malcolm->trgt_ip);
+	printf("|   trgt_mac: %s\n", malcolm->trgt_mac);
+	printf("--------------------\n");
+
 }
