@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:31:52 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/14 16:40:26 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/14 18:46:34 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 void	parsing(int argc, char **argv, t_malcolm *malcolm)
 {
+	if (argc == 2 && strncmp(argv[1], "--usage", ft_strlen(argv[1]) + 1) == 0)
+	{
+		printf("Usage: ./ft_malcolm <src_ip> <src_mac> <trgt_ip> <trgt_mac>\n");
+		free_all(EXIT_SUCCESS, malcolm);
+	}
+	
 	if (argc != 5)
 	{
 		fprintf(stderr, "./ft_malcolm: missing host operand\n");
