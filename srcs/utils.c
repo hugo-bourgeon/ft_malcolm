@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:27:44 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/14 17:59:35 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/14 18:38:37 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,31 +35,15 @@ void	free_all(int exit_code, t_malcolm *malcolm)
 		exit(exit_code);
 }
 
-void get_arp_interfaces(t_malcolm *malcolm)
+void	print_arp_request(struct ether_arp *arp, char *ip_str)
 {
-	struct ifaddrs *ifaddr, *ifa;
-
-	// list of network interfaces
-	if (getifaddrs(&ifaddr) == -1)
-	{
-		fprintf(stderr, "socket: %s\n", strerror(errno));
-		free_all(EXIT_FAILURE, malcolm);
-	}
-
-	for (ifa = ifaddr; ifa != NULL; ifa = ifa->ifa_next)
-	{
-		if (ifa->ifa_addr == NULL)
-			continue;
-
-		// AF_PACKET only
-		if (ifa->ifa_addr->sa_family == AF_PACKET \
-			&& (ifa->ifa_flags & IFF_LOOPBACK) == 0 \
-			&& (ifa->ifa_flags & IFF_UP))
-		{
-			printf("Found available interface: %s\n", ifa->ifa_name);
-			malcolm->ifa_name = ft_strdup(ifa->ifa_name);
-		}
-	}
-
-	freeifaddrs(ifaddr);
+	printf("An ARP request has been broadcast :\n");
+	printf("    - Mac adress: %02x:%02x:%02x:%02x:%02x:%02x\n",
+		arp->arp_sha[0],
+		arp->arp_sha[1],
+		arp->arp_sha[2],
+		arp->arp_sha[3],
+		arp->arp_sha[4],
+		arp->arp_sha[5]);
+	printf("    - IP adress:  %s\n", ip_str);
 }

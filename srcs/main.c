@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:36:01 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/14 18:02:46 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/14 18:34:39 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int g_stop_code = PROCESS;
 
 void	print_struct(t_malcolm *malcolm);
-
 
 int main(int argc, char **argv)
 {
@@ -29,7 +28,7 @@ int main(int argc, char **argv)
 	
 	get_arp_interfaces(malcolm);
 	init_arp_socket(malcolm, malcolm->ifa_name);
-	// ft_malcolm(malcolm);
+	listen_arp_requests(malcolm->sockfd);
 
 	free_all(NOT_EXIT, malcolm);
 	return (0);
@@ -43,5 +42,4 @@ void	print_struct(t_malcolm *malcolm)
 	printf("|   trgt_ip:  %s\n", malcolm->trgt_ip);
 	printf("|   trgt_mac: %s\n", malcolm->trgt_mac);
 	printf("--------------------\n");
-
 }
