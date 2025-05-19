@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:36:01 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/14 18:34:39 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:46:34 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 	
 	get_arp_interfaces(malcolm);
 	init_arp_socket(malcolm, malcolm->ifa_name);
-	listen_arp_requests(malcolm->sockfd);
+	listen_arp_requests(malcolm, malcolm->sockfd);
 
 	free_all(NOT_EXIT, malcolm);
 	return (0);

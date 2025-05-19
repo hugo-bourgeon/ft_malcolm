@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/14 18:31:29 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:46:17 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ typedef struct s_malcolm
 
 // process.c
 void	get_arp_interfaces(t_malcolm *malcolm);
-void	listen_arp_requests(int sockfd);
+void	listen_arp_requests(t_malcolm *malcolm, int sockfd);
 
 // init.c
 void	init(t_malcolm **malcolm);
@@ -63,5 +63,7 @@ void	parsing(int argc, char **argv, t_malcolm *malcolm);
 // utils.c
 void	free_all(int exit_code, t_malcolm *malcolm);
 void	print_arp_request(struct ether_arp *arp, char *ip_str);
+void	handle_sigint(int sig);
+void	check_sigint(t_malcolm *malt_malcolm);
 
 #endif

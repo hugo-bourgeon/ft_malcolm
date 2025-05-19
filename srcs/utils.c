@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:27:44 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/14 18:38:37 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:52:39 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,16 @@ void	print_arp_request(struct ether_arp *arp, char *ip_str)
 		arp->arp_sha[4],
 		arp->arp_sha[5]);
 	printf("    - IP adress:  %s\n", ip_str);
+}
+
+void	handle_sigint(int sig)
+{
+	(void)sig;
+	g_stop_code = STOP;
+}
+
+void	check_sigint(t_malcolm *malcolm)
+{
+	if (g_stop_code == STOP)
+		free_all(EXIT_SUCCESS, malcolm);
 }
