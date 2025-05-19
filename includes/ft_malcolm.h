@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/19 15:46:17 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/19 18:38:32 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,13 @@ typedef struct s_malcolm
 	char    *trgt_mac;
 	int     sockfd;
 	char	*ifa_name;
+	int		ifa_index;
 }	t_malcolm;
 
 // process.c
 void	get_arp_interfaces(t_malcolm *malcolm);
 void	listen_arp_requests(t_malcolm *malcolm, int sockfd);
+void	send_arp_reply(t_malcolm *malcolm, int sockfd);
 
 // init.c
 void	init(t_malcolm **malcolm);
