@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:26:49 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/21 18:22:33 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/21 19:19:58 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ void init_arp_socket(t_malcolm *malcolm, const char *iface_name)
 	}
 
 	// Bind socket to interface
-	if (setsockopt(malcolm->sockfd, SOL_SOCKET, SO_BINDTODEVICE, iface_name, strlen(iface_name)) < 0)
+	if (setsockopt(malcolm->sockfd, SOL_SOCKET, SO_BINDTODEVICE, iface_name,
+				   strlen(iface_name))
+		< 0)
 	{
 		fprintf(stderr, "setsockopt(SO_BINDTODEVICE): %s\n", strerror(errno));
 		free_all(EXIT_FAILURE, malcolm);

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/21 18:58:48 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/21 19:19:43 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ typedef struct s_malcolm
 void get_arp_interfaces(t_malcolm *malcolm);
 void listen_arp_requests(t_malcolm *malcolm, int sockfd);
 void send_arp_reply(t_malcolm *malcolm, int sockfd);
-void send_fake_arp_request(t_malcolm *malcolm, const char *src_ip, const char *trgt_ip, const char *spoof_mac);
+void send_fake_arp_request(t_malcolm *malcolm, const char *src_ip,
+						   const char *trgt_ip, const char *spoof_mac);
 
 // init.c
 void init(t_malcolm **malcolm);
