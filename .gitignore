@@ -3,3 +3,5 @@
 .DS_STORE
 .vscode/
 ft_malcolm
+.clang-format
+.clangd

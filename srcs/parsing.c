@@ -6,20 +6,20 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:31:52 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/14 18:46:34 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:32:06 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malcolm.h"
 
-void	parsing(int argc, char **argv, t_malcolm *malcolm)
+void parsing(int argc, char **argv, t_malcolm *malcolm)
 {
 	if (argc == 2 && strncmp(argv[1], "--usage", ft_strlen(argv[1]) + 1) == 0)
 	{
 		printf("Usage: ./ft_malcolm <src_ip> <src_mac> <trgt_ip> <trgt_mac>\n");
 		free_all(EXIT_SUCCESS, malcolm);
 	}
-	
+
 	if (argc != 5)
 	{
 		fprintf(stderr, "./ft_malcolm: missing host operand\n");
@@ -27,28 +27,8 @@ void	parsing(int argc, char **argv, t_malcolm *malcolm)
 		free_all(EXIT_FAILURE, malcolm);
 	}
 
-	malcolm->src_ip = strdup(argv[1]);
-	if (!malcolm->src_ip)
-	{
-		fprintf(stderr, "sendto error: %s\n", strerror(errno));
-		free_all(EXIT_FAILURE, malcolm);
-	}
-	malcolm->src_mac = strdup(argv[2]);
-	if (!malcolm->src_mac)
-	{
-		fprintf(stderr, "sendto error: %s\n", strerror(errno));
-		free_all(EXIT_FAILURE, malcolm);
-	}
-	malcolm->trgt_ip = strdup(argv[3]);
-	if (!malcolm->trgt_ip)
-	{
-		fprintf(stderr, "sendto error: %s\n", strerror(errno));
-		free_all(EXIT_FAILURE, malcolm);
-	}
-	malcolm->trgt_mac = strdup(argv[4]);
-	if (!malcolm->trgt_mac)
-	{
-		fprintf(stderr, "sendto error: %s\n", strerror(errno));
-		free_all(EXIT_FAILURE, malcolm);
-	}
+	malcolm->src_ip = dup_str(malcolm, argv[1]);
+	malcolm->src_mac = dup_str(malcolm, argv[2]);
+	malcolm->trgt_ip = dup_str(malcolm, argv[3]);
+	malcolm->trgt_mac = dup_str(malcolm, argv[4]);
 }

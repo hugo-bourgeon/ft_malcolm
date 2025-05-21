@@ -6,13 +6,13 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:27:44 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/19 15:52:39 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/21 18:55:25 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_malcolm.h"
 
-void	free_all(int exit_code, t_malcolm *malcolm)
+void free_all(int exit_code, t_malcolm *malcolm)
 {
 	if (malcolm)
 	{
@@ -28,34 +28,54 @@ void	free_all(int exit_code, t_malcolm *malcolm)
 			close(malcolm->sockfd);
 		if (malcolm->ifa_name)
 			free(malcolm->ifa_name);
-		
+
 		free(malcolm);
 	}
 	if (exit_code == EXIT_FAILURE || exit_code == EXIT_SUCCESS)
 		exit(exit_code);
 }
 
-void	print_arp_request(struct ether_arp *arp, char *ip_str)
+char *dup_str(t_malcolm *malcolm, const char *str)
 {
-	printf("An ARP request has been broadcast :\n");
-	printf("    - Mac adress: %02x:%02x:%02x:%02x:%02x:%02x\n",
-		arp->arp_sha[0],
-		arp->arp_sha[1],
-		arp->arp_sha[2],
-		arp->arp_sha[3],
-		arp->arp_sha[4],
-		arp->arp_sha[5]);
-	printf("    - IP adress:  %s\n", ip_str);
+	char *dup;
+
+	dup = ft_strdup(str);
+	if (!dup)
+	{
+		fprintf(stderr, "sendto error: %s\n", strerror(errno));
+		free_all(EXIT_FAILURE, malcolm);
+	}
+	return (dup);
 }
 
-void	handle_sigint(int sig)
+void handle_sigint(int sig)
 {
 	(void)sig;
 	g_stop_code = STOP;
 }
 
-void	check_sigint(t_malcolm *malcolm)
+void check_sigint(t_malcolm *malcolm)
 {
 	if (g_stop_code == STOP)
 		free_all(EXIT_SUCCESS, malcolm);
+}
+
+int hexchar_to_int(char c)
+{
+	if (c >= '0' && c <= '9')
+		return c - '0';
+	if (c >= 'a' && c <= 'f')
+		return c - 'a' + 10;
+	if (c >= 'A' && c <= 'F')
+		return c - 'A' + 10;
+	return (-1); // Should not happen
+}
+
+void parse_mac(const char *str, uint8_t mac[6])
+{
+	for (int i = 0; i < 6; i++)
+	{
+		mac[i] = (hexchar_to_int(str[0]) << 4) | hexchar_to_int(str[1]);
+		str += 3; // skip ':'
+	}
 }
