@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/22 15:23:42 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/22 15:50:17 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ void  check_sigint(t_malcolm *malt_malcolm);
 int	  hexchar_to_int(char c);
 void  parse_mac(const char *str, uint8_t mac[6]);
 char *resolve_hostname(t_malcolm *malcolm, const char *hostname);
+int	  is_valid_mac(const char *mac);
 
 // print.c
 void print_info(t_malcolm *malcolm);
