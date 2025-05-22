@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:27:44 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/22 15:13:01 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/22 15:37:49 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,25 @@ int hexchar_to_int(char c)
 	if (c >= 'A' && c <= 'F')
 		return c - 'A' + 10;
 	return (-1); // Should not happen
+}
+
+int is_valid_mac(const char *mac)
+{
+	int i = 0;
+	int count = 0;
+
+	while (mac[i])
+	{
+		if (mac[i] == ':')
+			count++;
+		else if (!((mac[i] >= '0' && mac[i] <= '9') || (mac[i] >= 'a' && mac[i] <= 'f')
+				   || (mac[i] >= 'A' && mac[i] <= 'F')))
+			return 0;
+		i++;
+	}
+	if (count == 5 && i == 17)
+		return (1);
+	return (0);
 }
 
 void parse_mac(const char *str, uint8_t mac[6])
