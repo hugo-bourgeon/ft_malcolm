@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:31:52 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/21 19:19:57 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/22 15:22:26 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,19 @@ void parsing(int argc, char **argv, t_malcolm *malcolm)
 		free_all(EXIT_FAILURE, malcolm);
 	}
 
-	malcolm->src_ip = dup_str(malcolm, argv[1]);
 	malcolm->src_mac = dup_str(malcolm, argv[2]);
-	malcolm->trgt_ip = dup_str(malcolm, argv[3]);
 	malcolm->trgt_mac = dup_str(malcolm, argv[4]);
+
+	malcolm->src_ip = resolve_hostname(malcolm, argv[1]);
+	malcolm->trgt_ip = resolve_hostname(malcolm, argv[3]);
+	if (!malcolm->src_ip)
+	{
+		fprintf(stderr, "ft_malcolm: unknown host or invalid IP address: '%s'\n", argv[1]);
+		free_all(EXIT_FAILURE, malcolm);
+	}
+	if (!malcolm->trgt_ip)
+	{
+		fprintf(stderr, "ft_malcolm: unknown host or invalid IP address: '%s'\n", argv[3]);
+		free_all(EXIT_FAILURE, malcolm);
+	}
 }

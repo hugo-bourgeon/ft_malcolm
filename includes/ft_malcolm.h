@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/21 19:19:43 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/22 15:23:42 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <linux/if_packet.h>
 #include <net/ethernet.h>
 #include <net/if.h>
+#include <netdb.h>
 #include <netinet/if_ether.h>
 #include <signal.h>
 #include <stdio.h>
@@ -61,8 +62,7 @@ typedef struct s_malcolm
 void get_arp_interfaces(t_malcolm *malcolm);
 void listen_arp_requests(t_malcolm *malcolm, int sockfd);
 void send_arp_reply(t_malcolm *malcolm, int sockfd);
-void send_fake_arp_request(t_malcolm *malcolm, const char *src_ip,
-						   const char *trgt_ip, const char *spoof_mac);
+void send_fake_arp_request(t_malcolm *malcolm, const char *src_ip, const char *trgt_ip, const char *spoof_mac);
 
 // init.c
 void init(t_malcolm **malcolm);
@@ -78,8 +78,10 @@ void  handle_sigint(int sig);
 void  check_sigint(t_malcolm *malt_malcolm);
 int	  hexchar_to_int(char c);
 void  parse_mac(const char *str, uint8_t mac[6]);
+char *resolve_hostname(t_malcolm *malcolm, const char *hostname);
 
 // print.c
+void print_info(t_malcolm *malcolm);
 void print_arp_request(struct ether_arp *arp, char *ip_str);
 void print_sending(t_malcolm *malcolm);
 void print_sent(t_malcolm *malcolm, uint8_t src_mac[6]);

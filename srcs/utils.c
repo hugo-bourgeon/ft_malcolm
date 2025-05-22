@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:27:44 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/21 19:19:56 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/22 15:13:01 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,39 @@ void parse_mac(const char *str, uint8_t mac[6])
 		mac[i] = (hexchar_to_int(str[0]) << 4) | hexchar_to_int(str[1]);
 		str += 3; // skip ':'
 	}
+}
+
+char *resolve_hostname(t_malcolm *malcolm, const char *hostname)
+{
+	struct addrinfo hints, *res;
+	char		   *ipstr;
+
+	ipstr = malloc(INET_ADDRSTRLEN);
+	if (!ipstr)
+	{
+		fprintf(stderr, "malloc error: %s\n", strerror(errno));
+		free_all(EXIT_FAILURE, malcolm);
+	}
+
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_INET;
+
+	if (getaddrinfo(hostname, NULL, &hints, &res) != 0)
+	{
+		free(ipstr);
+		return NULL;
+	}
+
+	struct sockaddr_in *ipv4 = (struct sockaddr_in *)res->ai_addr;
+	inet_ntop(AF_INET, &(ipv4->sin_addr), ipstr, INET_ADDRSTRLEN);
+	freeaddrinfo(res);
+
+	char *result = ft_strdup(ipstr);
+	free(ipstr);
+	if (result == NULL)
+	{
+		fprintf(stderr, "malloc error: %s\n", strerror(errno));
+		free_all(EXIT_FAILURE, malcolm);
+	}
+	return result;
 }

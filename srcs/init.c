@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:26:49 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/21 19:19:58 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/05/22 15:07:56 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void init(t_malcolm **malcolm)
 	(*malcolm)->trgt_mac = NULL;
 	(*malcolm)->sockfd = 0;
 	(*malcolm)->ifa_name = NULL;
+	(*malcolm)->ifa_index = 0;
 }
 
 void init_arp_socket(t_malcolm *malcolm, const char *iface_name)
