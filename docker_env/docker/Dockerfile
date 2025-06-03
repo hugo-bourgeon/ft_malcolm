@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     nano \
     sudo \
     procps \
+    valgrind \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home

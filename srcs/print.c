@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 18:55:05 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 16:07:33 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 17:31:44 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,24 +24,58 @@ void print_info(t_malcolm *malcolm)
 	printf(COLOR_RED "           - target mac:            %s\n\n" COLOR_RESET, malcolm->trgt_mac);
 }
 
+void print_sending(t_malcolm *malcolm)
+{
+	printf("\n Sending an " COLOR_CYAN "ARP reply" COLOR_RESET " to " COLOR_RED "%s (target)" COLOR_RESET
+		   " with " COLOR_RED "spoofed mac" COLOR_RESET ", wait...\n",
+		   malcolm->trgt_ip);
+}
+
+void print_sent(t_malcolm *malcolm, uint8_t src_mac[6], unsigned char *packet, ssize_t len)
+{
+	printf(" Sent an " COLOR_CYAN "ARP reply" COLOR_RESET " packet: " COLOR_RED
+		   "%s is-at %02x:%02x:%02x:%02x:%02x:%02x" COLOR_RESET "\n",
+		   malcolm->src_ip, src_mac[0], src_mac[1], src_mac[2], src_mac[3], src_mac[4], src_mac[5]);
+	if (malcolm->verbose)
+	{
+		print_hexdump(packet, len);
+		printf("\n");
+	}
+}
+
+void print_check(void)
+{
+	printf("\n Please check " COLOR_CYAN "Arp table" COLOR_RESET " on the " COLOR_RED "target\n" COLOR_RESET);
+}
+
+void print_exit(void)
+{
+	printf(" Exiting program...\n\n");
+}
+
+void print_hexdump(unsigned char *buffer, ssize_t len)
+{
+	printf(COLOR_GREEN " Hexdump :" COLOR_RESET "\n");
+	for (int i = 0; i < len; i++)
+	{
+		if (i % 16 == 0)
+			printf("      %04x: ", i);
+		printf("%02x ", buffer[i]);
+		if ((i + 1) % 16 == 0)
+			printf("\n");
+	}
+	if (len % 16 != 0)
+		printf("\n");
+}
+
 void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_header *eth, char *ip_str, ssize_t len,
 					   unsigned char buffer[MAX_BUFFER_SIZE])
 {
 	if (malcolm->verbose)
 	{
+		printf(COLOR_CYAN "\n An ARP request has been broadcast from target :\n" COLOR_RESET);
 		printf(COLOR_GREEN "\n =================== Verbose mode ==================\n" COLOR_RESET);
-
-		printf(COLOR_GREEN " Hexdump :" COLOR_RESET "\n");
-		for (int i = 0; i < len; i++)
-		{
-			if (i % 16 == 0)
-				printf("      %04x: ", i);
-			printf("%02x ", buffer[i]);
-			if ((i + 1) % 16 == 0)
-				printf("\n");
-		}
-		if (len % 16 != 0)
-			printf("\n");
+		print_hexdump(buffer, len);
 
 		printf(COLOR_GREEN "\n Ethernet II :" COLOR_RESET "\n");
 		printf("      Destination: %02x:%02x:%02x:%02x:%02x:%02x (Broadcast)\n", eth->ether_dhost[0],
@@ -66,35 +100,11 @@ void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_h
 	}
 	else
 	{
-		printf(COLOR_CYAN "\n An ARP request has been broadcast from :\n" COLOR_RESET);
+		printf(COLOR_CYAN "\n An ARP request has been broadcast from target :\n" COLOR_RESET);
 		printf("     - Mac adress: " COLOR_RESET);
 		printf(COLOR_RED "%02x:%02x:%02x:%02x:%02x:%02x\n" COLOR_RESET, arp->arp_sha[0], arp->arp_sha[1],
 			   arp->arp_sha[2], arp->arp_sha[3], arp->arp_sha[4], arp->arp_sha[5]);
 		printf("     - IP adress: ");
 		printf(COLOR_RED " %s\n" COLOR_RESET, ip_str);
 	}
-}
-
-void print_sending(t_malcolm *malcolm)
-{
-	printf("\n Sending an " COLOR_CYAN "ARP reply" COLOR_RESET " to " COLOR_RED "%s (target)" COLOR_RESET
-		   " with " COLOR_RED "spoofed mac" COLOR_RESET ", wait...\n",
-		   malcolm->trgt_ip);
-}
-
-void print_sent(t_malcolm *malcolm, uint8_t src_mac[6])
-{
-	printf(" Sent an " COLOR_CYAN "ARP reply" COLOR_RESET " packet: " COLOR_RED
-		   "%s is-at %02x:%02x:%02x:%02x:%02x:%02x" COLOR_RESET "\n",
-		   malcolm->src_ip, src_mac[0], src_mac[1], src_mac[2], src_mac[3], src_mac[4], src_mac[5]);
-}
-
-void print_check(void)
-{
-	printf("\n Please check " COLOR_CYAN "Arp table" COLOR_RESET " on the " COLOR_RED "target\n" COLOR_RESET);
-}
-
-void print_exit(void)
-{
-	printf(" Exiting program...\n\n");
 }

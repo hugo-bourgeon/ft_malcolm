@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:36:01 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 14:54:10 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 16:30:10 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int main(int argc, char **argv)
 	listen_arp_requests(malcolm, malcolm->sockfd);
 	send_arp_reply(malcolm, malcolm->sockfd);
 
+	print_check();
 	print_exit();
 	free_all(NOT_EXIT, malcolm);
 	return (0);

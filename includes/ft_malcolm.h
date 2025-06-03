@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 16:05:45 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 17:18:05 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 #define STOP 1
 
 #define MAX_BUFFER_SIZE 65536
+#define PACKET_SIZE 42
 
 #define COLOR_RESET "\033[0m"
 #define COLOR_RED "\033[1;31m"
@@ -85,11 +86,12 @@ int	  is_valid_mac(const char *mac);
 
 // print.c
 void print_info(t_malcolm *malcolm);
-void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_header *eth, char *ip_str, ssize_t len,
-					   unsigned char buffer[MAX_BUFFER_SIZE]);
 void print_sending(t_malcolm *malcolm);
-void print_sent(t_malcolm *malcolm, uint8_t src_mac[6]);
+void print_sent(t_malcolm *malcolm, uint8_t src_mac[6], unsigned char *packet, ssize_t len);
 void print_check(void);
 void print_exit(void);
+void print_hexdump(unsigned char *buffer, ssize_t len);
+void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_header *eth, char *ip_str, ssize_t len,
+					   unsigned char buffer[MAX_BUFFER_SIZE]);
 
 #endif

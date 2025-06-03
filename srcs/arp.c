@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 18:15:25 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 16:05:20 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 17:16:42 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void listen_arp_requests(t_malcolm *malcolm, int sockfd)
 	socklen_t		   addr_len = sizeof(addr);
 
 	signal(SIGINT, handle_sigint);
+	printf(COLOR_CYAN "\n Listening for ARP requests on '%s'\n" COLOR_RESET, malcolm->ifa_name);
 
 	while (1)
 	{
@@ -110,7 +111,7 @@ void listen_arp_requests(t_malcolm *malcolm, int sockfd)
 
 void send_arp_reply(t_malcolm *malcolm, int sockfd)
 {
-	unsigned char packet[42];
+	unsigned char packet[PACKET_SIZE];
 
 	// === Ethernet Header ===
 	unsigned char *eth = packet;
@@ -159,17 +160,23 @@ void send_arp_reply(t_malcolm *malcolm, int sockfd)
 	parse_mac(malcolm->trgt_mac, dst_mac);
 	ft_memcpy(sll.sll_addr, dst_mac, 6);
 
+	uint8_t src_mac[6];
+	parse_mac(malcolm->src_mac, src_mac);
 	print_sending(malcolm);
 
 	sleep(1);
-	if (sendto(sockfd, packet, 42, 0, (struct sockaddr *)&sll, sizeof(sll)) < 0)
+	while (1)
 	{
-		perror("sendto");
-		return;
+		if (sendto(sockfd, packet, PACKET_SIZE, 0, (struct sockaddr *)&sll, sizeof(sll)) < 0)
+		{
+			perror("sendto");
+			return;
+		}
+		print_sent(malcolm, src_mac, packet, PACKET_SIZE);
+		if (g_stop_code == STOP)
+			break;
+		sleep(1);
+		if (g_stop_code == STOP || malcolm->flood == 0)
+			break;
 	}
-
-	uint8_t src_mac[6];
-	parse_mac(malcolm->src_mac, src_mac);
-	print_sent(malcolm, src_mac);
-	print_check();
 }
