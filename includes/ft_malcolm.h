@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 17:18:05 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 18:11:48 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include <net/if.h>
 #include <netdb.h>
 #include <netinet/if_ether.h>
+#include <netinet/in.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,6 +38,7 @@
 
 #define MAX_BUFFER_SIZE 65536
 #define PACKET_SIZE 42
+#define MAC_ADDRSTRLEN 18
 
 #define COLOR_RESET "\033[0m"
 #define COLOR_RED "\033[1;31m"
@@ -48,17 +50,20 @@
 
 extern int g_stop_code;
 
+// INET_ADDRSTRLEN
+// MAC_ADDRSTRLEN
+
 typedef struct s_malcolm
 {
-	char *src_ip;
-	char *src_mac;
-	char *trgt_ip;
-	char *trgt_mac;
-	int	  sockfd;
-	char *ifa_name;
-	int	  ifa_index;
-	int	  verbose;
-	int	  flood;
+	char src_ip[INET_ADDRSTRLEN];
+	char src_mac[MAC_ADDRSTRLEN];
+	char trgt_ip[INET_ADDRSTRLEN];
+	char trgt_mac[MAC_ADDRSTRLEN];
+	char ifa_name[IF_NAMESIZE];
+	int	 sockfd;
+	int	 ifa_index;
+	int	 verbose;
+	int	 flood;
 } t_malcolm;
 
 // process.c
@@ -81,7 +86,7 @@ void  handle_sigint(int sig);
 void  check_sigint(t_malcolm *malt_malcolm);
 int	  hexchar_to_int(char c);
 void  parse_mac(const char *str, uint8_t mac[6]);
-char *resolve_hostname(t_malcolm *malcolm, const char *hostname);
+int	  resolve_hostname(char ip[INET_ADDRSTRLEN], const char *hostname);
 int	  is_valid_mac(const char *mac);
 
 // print.c

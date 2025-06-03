@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:27:44 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/22 15:37:49 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 18:10:43 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,18 @@ void free_all(int exit_code, t_malcolm *malcolm)
 {
 	if (malcolm)
 	{
-		if (malcolm->src_ip)
-			free(malcolm->src_ip);
-		if (malcolm->src_mac)
-			free(malcolm->src_mac);
-		if (malcolm->trgt_ip)
-			free(malcolm->trgt_ip);
-		if (malcolm->trgt_mac)
-			free(malcolm->trgt_mac);
+		// if (malcolm->src_ip)
+		// 	free(malcolm->src_ip);
+		// if (malcolm->src_mac)
+		// 	free(malcolm->src_mac);
+		// if (malcolm->trgt_ip)
+		// 	free(malcolm->trgt_ip);
+		// if (malcolm->trgt_mac)
+		// 	free(malcolm->trgt_mac);
 		if (malcolm->sockfd > 0)
 			close(malcolm->sockfd);
-		if (malcolm->ifa_name)
-			free(malcolm->ifa_name);
+		// if (malcolm->ifa_name)
+		// 	free(malcolm->ifa_name);
 
 		free(malcolm);
 	}
@@ -52,6 +52,7 @@ void handle_sigint(int sig)
 {
 	(void)sig;
 	g_stop_code = STOP;
+	exit(1);
 }
 
 void check_sigint(t_malcolm *malcolm)
@@ -99,37 +100,21 @@ void parse_mac(const char *str, uint8_t mac[6])
 	}
 }
 
-char *resolve_hostname(t_malcolm *malcolm, const char *hostname)
+int resolve_hostname(char ip[INET_ADDRSTRLEN], const char *hostname)
 {
 	struct addrinfo hints, *res;
-	char		   *ipstr;
-
-	ipstr = malloc(INET_ADDRSTRLEN);
-	if (!ipstr)
-	{
-		fprintf(stderr, "malloc error: %s\n", strerror(errno));
-		free_all(EXIT_FAILURE, malcolm);
-	}
+	char			ipstr[INET_ADDRSTRLEN];
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_INET;
 
 	if (getaddrinfo(hostname, NULL, &hints, &res) != 0)
-	{
-		free(ipstr);
-		return NULL;
-	}
+		return (0);
 
 	struct sockaddr_in *ipv4 = (struct sockaddr_in *)res->ai_addr;
 	inet_ntop(AF_INET, &(ipv4->sin_addr), ipstr, INET_ADDRSTRLEN);
 	freeaddrinfo(res);
 
-	char *result = ft_strdup(ipstr);
-	free(ipstr);
-	if (result == NULL)
-	{
-		fprintf(stderr, "malloc error: %s\n", strerror(errno));
-		free_all(EXIT_FAILURE, malcolm);
-	}
-	return result;
+	ft_memcpy(ip, ipstr, INET_ADDRSTRLEN);
+	return (1);
 }

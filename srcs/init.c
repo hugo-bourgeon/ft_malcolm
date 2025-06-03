@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:26:49 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 15:12:05 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 18:16:37 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,13 @@ void init(t_malcolm **malcolm)
 		free_all(EXIT_FAILURE, *malcolm);
 	}
 
-	(*malcolm)->src_ip = NULL;
-	(*malcolm)->src_mac = NULL;
-	(*malcolm)->trgt_ip = NULL;
-	(*malcolm)->trgt_mac = NULL;
+	ft_memset((*malcolm)->src_ip, 0, INET_ADDRSTRLEN);
+	ft_memset((*malcolm)->src_mac, 0, MAC_ADDRSTRLEN);
+	ft_memset((*malcolm)->trgt_ip, 0, INET_ADDRSTRLEN);
+	ft_memset((*malcolm)->trgt_mac, 0, MAC_ADDRSTRLEN);
+	ft_memset((*malcolm)->ifa_name, 0, MAC_ADDRSTRLEN);
+
 	(*malcolm)->sockfd = 0;
-	(*malcolm)->ifa_name = NULL;
 	(*malcolm)->ifa_index = 0;
 	(*malcolm)->verbose = 0;
 	(*malcolm)->flood = 0;

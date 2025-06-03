@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:31:52 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 16:08:21 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 18:08:08 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,12 @@
 
 void get_ip(char *src_ip, char *trgt_ip, t_malcolm *malcolm)
 {
-	malcolm->src_ip = resolve_hostname(malcolm, src_ip);
-	malcolm->trgt_ip = resolve_hostname(malcolm, trgt_ip);
-	if (!malcolm->src_ip)
+	if (!resolve_hostname(malcolm->src_ip, src_ip))
 	{
 		fprintf(stderr, "ft_malcolm: unknown host or invalid IP address: '%s'\n", src_ip);
 		free_all(EXIT_FAILURE, malcolm);
 	}
-	if (!malcolm->trgt_ip)
+	if (!resolve_hostname(malcolm->trgt_ip, trgt_ip))
 	{
 		fprintf(stderr, "ft_malcolm: unknown host or invalid IP address: '%s'\n", trgt_ip);
 		free_all(EXIT_FAILURE, malcolm);
@@ -40,9 +38,10 @@ void get_mac(char *src_mac, char *trgt_mac, t_malcolm *malcolm)
 		fprintf(stderr, "ft_malcolm: invalid target mac address: '%s'\n", trgt_mac);
 		free_all(EXIT_FAILURE, malcolm);
 	}
-
-	malcolm->src_mac = dup_str(malcolm, src_mac);
-	malcolm->trgt_mac = dup_str(malcolm, trgt_mac);
+	ft_memcpy(malcolm->src_mac, src_mac, MAC_ADDRSTRLEN);
+	ft_memcpy(malcolm->trgt_mac, trgt_mac, MAC_ADDRSTRLEN);
+	// malcolm->src_mac = dup_str(malcolm, src_mac);
+	// malcolm->trgt_mac = dup_str(malcolm, trgt_mac);
 }
 
 void parsing(int argc, char **argv, t_malcolm *malcolm)

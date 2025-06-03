@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 18:15:25 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 17:16:42 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 18:13:46 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ void get_arp_interfaces(t_malcolm *malcolm)
 		// AF_PACKET only
 		if (ifa->ifa_addr->sa_family == AF_PACKET && (ifa->ifa_flags & IFF_LOOPBACK) == 0 && (ifa->ifa_flags & IFF_UP))
 		{
-			if (!malcolm->ifa_name)
+			if (malcolm->ifa_name[0] != '\0')
 				printf(COLOR_CYAN " Found available interface : \n" COLOR_RESET);
-			if (malcolm->ifa_name)
-				free(malcolm->ifa_name);
+
 			printf(COLOR_RED "           - %s\n" COLOR_RESET, ifa->ifa_name);
-			malcolm->ifa_name = dup_str(malcolm, ifa->ifa_name);
+			ft_memcpy(malcolm->ifa_name, ifa->ifa_name, IF_NAMESIZE);
+			
 			malcolm->ifa_index = if_nametoindex(ifa->ifa_name);
 			if (malcolm->ifa_index == 0)
 			{
