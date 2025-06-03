@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:36:01 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/22 15:23:13 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 14:54:10 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,3 @@ int main(int argc, char **argv)
 	free_all(NOT_EXIT, malcolm);
 	return (0);
 }
-

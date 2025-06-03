@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/22 15:50:17 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 16:05:45 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 #define COLOR_RESET "\033[0m"
 #define COLOR_RED "\033[1;31m"
-#define COLOR_GREEN "\033[0;32m"
+#define COLOR_GREEN "\033[1;32m"
 #define COLOR_YELLOW "\033[0;33m"
 #define COLOR_BLUE "\033[0;34m"
 #define COLOR_MAGENTA "\033[0;35m"
@@ -56,6 +56,8 @@ typedef struct s_malcolm
 	int	  sockfd;
 	char *ifa_name;
 	int	  ifa_index;
+	int	  verbose;
+	int	  flood;
 } t_malcolm;
 
 // process.c
@@ -83,7 +85,8 @@ int	  is_valid_mac(const char *mac);
 
 // print.c
 void print_info(t_malcolm *malcolm);
-void print_arp_request(struct ether_arp *arp, char *ip_str);
+void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_header *eth, char *ip_str, ssize_t len,
+					   unsigned char buffer[MAX_BUFFER_SIZE]);
 void print_sending(t_malcolm *malcolm);
 void print_sent(t_malcolm *malcolm, uint8_t src_mac[6]);
 void print_check(void);

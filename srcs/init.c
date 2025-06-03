@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:26:49 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/22 15:07:56 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 15:12:05 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void init(t_malcolm **malcolm)
 	(*malcolm)->sockfd = 0;
 	(*malcolm)->ifa_name = NULL;
 	(*malcolm)->ifa_index = 0;
+	(*malcolm)->verbose = 0;
+	(*malcolm)->flood = 0;
 }
 
 void init_arp_socket(t_malcolm *malcolm, const char *iface_name)
@@ -41,9 +43,7 @@ void init_arp_socket(t_malcolm *malcolm, const char *iface_name)
 	}
 
 	// Bind socket to interface
-	if (setsockopt(malcolm->sockfd, SOL_SOCKET, SO_BINDTODEVICE, iface_name,
-				   strlen(iface_name))
-		< 0)
+	if (setsockopt(malcolm->sockfd, SOL_SOCKET, SO_BINDTODEVICE, iface_name, strlen(iface_name)) < 0)
 	{
 		fprintf(stderr, "setsockopt(SO_BINDTODEVICE): %s\n", strerror(errno));
 		free_all(EXIT_FAILURE, malcolm);

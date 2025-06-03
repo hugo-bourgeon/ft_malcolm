@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 18:15:25 by hubourge          #+#    #+#             */
-/*   Updated: 2025/05/21 19:19:59 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 16:05:20 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,10 @@ void get_arp_interfaces(t_malcolm *malcolm)
 			continue;
 
 		// AF_PACKET only
-		if (ifa->ifa_addr->sa_family == AF_PACKET
-			&& (ifa->ifa_flags & IFF_LOOPBACK) == 0
-			&& (ifa->ifa_flags & IFF_UP))
+		if (ifa->ifa_addr->sa_family == AF_PACKET && (ifa->ifa_flags & IFF_LOOPBACK) == 0 && (ifa->ifa_flags & IFF_UP))
 		{
 			if (!malcolm->ifa_name)
-				printf(COLOR_CYAN
-					   " Found available interface : \n" COLOR_RESET);
+				printf(COLOR_CYAN " Found available interface : \n" COLOR_RESET);
 			if (malcolm->ifa_name)
 				free(malcolm->ifa_name);
 			printf(COLOR_RED "           - %s\n" COLOR_RESET, ifa->ifa_name);
@@ -46,9 +43,7 @@ void get_arp_interfaces(t_malcolm *malcolm)
 				fprintf(stderr, "if_nametoindex: %s\n", strerror(errno));
 				free_all(EXIT_FAILURE, malcolm);
 			}
-			if (strcmp(malcolm->ifa_name, "br-46e67b7b9bc5")
-				== 0) //////////////////////////////////// Remove
-				break;
+			break;
 		}
 	}
 
@@ -67,8 +62,7 @@ void listen_arp_requests(t_malcolm *malcolm, int sockfd)
 	{
 		check_sigint(malcolm);
 
-		ssize_t len = recvfrom(sockfd, buffer, sizeof(buffer), 0,
-							   (struct sockaddr *)&addr, &addr_len);
+		ssize_t len = recvfrom(sockfd, buffer, sizeof(buffer), 0, (struct sockaddr *)&addr, &addr_len);
 		if (len < 0)
 		{
 			fprintf(stderr, "recvfrom: %s\n", strerror(errno));
@@ -85,23 +79,31 @@ void listen_arp_requests(t_malcolm *malcolm, int sockfd)
 		if (ft_memcmp(eth->ether_dhost, "\xff\xff\xff\xff\xff\xff", 6) != 0)
 			continue;
 
-		struct ether_arp *arp
-			= (struct ether_arp *)(buffer + sizeof(struct ether_header));
+		struct ether_arp *arp = (struct ether_arp *)(buffer + sizeof(struct ether_header));
 
 		// Check ARP request
 		if (ntohs(arp->ea_hdr.ar_op) != ARPOP_REQUEST)
 			continue;
 
-		// Extract sender MAC/IP
-		char		   ip_str[INET_ADDRSTRLEN];
+		// Extract sender IP
+		char		   ip_str_src[INET_ADDRSTRLEN];
 		unsigned char *ip = arp->arp_spa;
 
-		// Convert IP to string
-		sprintf(ip_str, "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
-		if (ft_strncmp(ip_str, malcolm->trgt_ip, INET_ADDRSTRLEN) != 0)
+		// Check if the sender IP matches the target IP
+		sprintf(ip_str_src, "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
+		if (ft_strncmp(ip_str_src, malcolm->trgt_ip, INET_ADDRSTRLEN) != 0)
 			continue;
 
-		print_arp_request(arp, ip_str);
+		// Extract target IP
+		char		   ip_str_trgt[INET_ADDRSTRLEN];
+		unsigned char *target_ip = arp->arp_tpa;
+		sprintf(ip_str_trgt, "%u.%u.%u.%u", target_ip[0], target_ip[1], target_ip[2], target_ip[3]);
+
+		// Check if the target IP matches the source
+		if (ft_strncmp(ip_str_trgt, malcolm->src_ip, INET_ADDRSTRLEN) != 0)
+			continue;
+
+		print_arp_request(malcolm, arp, eth, ip_str_src, len, buffer);
 		break;
 	}
 }
@@ -115,12 +117,10 @@ void send_arp_reply(t_malcolm *malcolm, int sockfd)
 	unsigned char *arp = packet + 14;
 
 	// Destination MAC
-	sscanf(malcolm->trgt_mac, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &eth[0], &eth[1],
-		   &eth[2], &eth[3], &eth[4], &eth[5]);
+	sscanf(malcolm->trgt_mac, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &eth[0], &eth[1], &eth[2], &eth[3], &eth[4], &eth[5]);
 
 	// Source MAC
-	sscanf(malcolm->src_mac, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &eth[6], &eth[7],
-		   &eth[8], &eth[9], &eth[10], &eth[11]);
+	sscanf(malcolm->src_mac, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &eth[6], &eth[7], &eth[8], &eth[9], &eth[10], &eth[11]);
 
 	eth[12] = 0x08; // ARP type
 	eth[13] = 0x06;
@@ -137,15 +137,14 @@ void send_arp_reply(t_malcolm *malcolm, int sockfd)
 	arp[7] = 0x02; // ARP REPLY
 
 	// Sender MAC
-	sscanf(malcolm->src_mac, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &arp[8], &arp[9],
-		   &arp[10], &arp[11], &arp[12], &arp[13]);
+	sscanf(malcolm->src_mac, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &arp[8], &arp[9], &arp[10], &arp[11], &arp[12], &arp[13]);
 
 	// Sender IP
 	inet_pton(AF_INET, malcolm->src_ip, &arp[14]);
 
 	// Target MAC
-	sscanf(malcolm->trgt_mac, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &arp[18],
-		   &arp[19], &arp[20], &arp[21], &arp[22], &arp[23]);
+	sscanf(malcolm->trgt_mac, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &arp[18], &arp[19], &arp[20], &arp[21], &arp[22],
+		   &arp[23]);
 
 	// Target IP
 	inet_pton(AF_INET, malcolm->trgt_ip, &arp[24]);
