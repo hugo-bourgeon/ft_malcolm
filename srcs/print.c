@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 18:55:05 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 17:31:44 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/03 18:41:52 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,9 @@ void print_sent(t_malcolm *malcolm, uint8_t src_mac[6], unsigned char *packet, s
 	}
 }
 
-void print_check(void)
-{
-	printf("\n Please check " COLOR_CYAN "Arp table" COLOR_RESET " on the " COLOR_RED "target\n" COLOR_RESET);
-}
-
 void print_exit(void)
 {
+	printf("\n Please check " COLOR_CYAN "Arp table" COLOR_RESET " on the " COLOR_RED "target\n" COLOR_RESET);
 	printf(" Exiting program...\n\n");
 }
 
