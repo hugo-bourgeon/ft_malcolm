@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/04 14:47:56 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:03:31 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@
 #include <unistd.h>
 
 #define NOT_EXIT -1
-
 #define MAX_BUFFER_SIZE 65536
 #define PACKET_SIZE 42
 #define MAC_ADDRSTRLEN 18
@@ -61,6 +60,7 @@ typedef struct s_malcolm
 	int	 ifa_index;
 	int	 verbose;
 	int	 flood;
+	int	 inspect;
 } t_malcolm;
 
 // process.c
@@ -82,7 +82,8 @@ void	 handle_sigint(int sig);
 int		 hexchar_to_int(char c);
 uint32_t ip_to_decimal(const char *ip_str);
 void	 parse_mac(const char *str, uint8_t mac[6]);
-int		 resolve_hostname(char ip[INET_ADDRSTRLEN], const char *hostname);
+char	*resolve_hostname(const char *ip_str);
+int		 get_hostname(char ip[INET_ADDRSTRLEN], const char *hostname);
 int		 is_valid_mac(const char *mac);
 
 // print.c
@@ -91,7 +92,6 @@ void print_sending(t_malcolm *malcolm);
 void print_sent(t_malcolm *malcolm, uint8_t src_mac[6], unsigned char *packet, ssize_t len);
 void print_exit(void);
 void print_hexdump(unsigned char *buffer, ssize_t len);
-void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_header *eth, char *ip_str, ssize_t len,
-					   unsigned char buffer[MAX_BUFFER_SIZE]);
+void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_header *eth, char *ip_str);
 
 #endif

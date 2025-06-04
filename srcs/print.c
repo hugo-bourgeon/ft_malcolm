@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 18:55:05 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/04 14:51:17 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:01:47 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 void print_info(t_malcolm *malcolm)
 {
-	printf(COLOR_GREEN "\n Verbose mode :             " COLOR_RESET COLOR_RED "%s\n" COLOR_RESET,
-		   malcolm->verbose ? "ON" : "OFF");
-	printf(COLOR_GREEN " Flooding mode :            " COLOR_RESET COLOR_RED "%s\n" COLOR_RESET,
+	printf(COLOR_GREEN "\n Flooding mode :            " COLOR_RESET COLOR_RED "%s\n" COLOR_RESET,
 		   malcolm->flood ? "ON" : "OFF");
+	printf(COLOR_GREEN " Verbose mode :             " COLOR_RESET COLOR_RED "%s\n" COLOR_RESET,
+		   malcolm->verbose ? "ON" : "OFF");
+	printf(COLOR_GREEN " Inspect mode :             " COLOR_RESET COLOR_RED "%s\n" COLOR_RESET,
+		   malcolm->verbose ? "ON" : "OFF");
 	printf(COLOR_GREEN " Decimal notation mode :    " COLOR_RESET COLOR_RED "ALWAYS ON\n" COLOR_RESET);
 	printf(COLOR_GREEN " Hostname resolution mode : " COLOR_RESET COLOR_RED "ALWAYS ON\n" COLOR_RESET);
 
@@ -57,7 +59,6 @@ void print_exit(void)
 
 void print_hexdump(unsigned char *buffer, ssize_t len)
 {
-	printf(COLOR_GREEN " Hexdump :" COLOR_RESET "\n");
 	for (int i = 0; i < len; i++)
 	{
 		if (i % 16 == 0)
@@ -70,16 +71,14 @@ void print_hexdump(unsigned char *buffer, ssize_t len)
 		printf("\n");
 }
 
-void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_header *eth, char *ip_str, ssize_t len,
-					   unsigned char buffer[MAX_BUFFER_SIZE])
+void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_header *eth, char *ip_str)
 {
 	if (malcolm->verbose)
 	{
 		printf(COLOR_CYAN "\n An ARP request has been broadcast from target :\n" COLOR_RESET);
 		printf(COLOR_GREEN "\n =================== Verbose mode ==================\n" COLOR_RESET);
-		print_hexdump(buffer, len);
 
-		printf(COLOR_GREEN "\n Ethernet II :" COLOR_RESET "\n");
+		printf(COLOR_GREEN " Ethernet II :" COLOR_RESET "\n");
 		printf("      Destination: %02x:%02x:%02x:%02x:%02x:%02x (Broadcast)\n", eth->ether_dhost[0],
 			   eth->ether_dhost[1], eth->ether_dhost[2], eth->ether_dhost[3], eth->ether_dhost[4], eth->ether_dhost[5]);
 		printf("      Source:      %02x:%02x:%02x:%02x:%02x:%02x\n", eth->ether_shost[0], eth->ether_shost[1],
@@ -94,10 +93,13 @@ void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_h
 		printf("      Opcode:        request (%d)\n", ntohs(arp->ea_hdr.ar_op));
 		printf("      Sender MAC address: %02x:%02x:%02x:%02x:%02x:%02x\n", arp->arp_sha[0], arp->arp_sha[1],
 			   arp->arp_sha[2], arp->arp_sha[3], arp->arp_sha[4], arp->arp_sha[5]);
-		printf("      Sender IP address:  %s\n", ip_str);
+		printf("      Sender IP address:  %s (%s)\n", ip_str, resolve_hostname(ip_str));
 		printf("      Target MAC address: 00:00:00:00:00:00 (unknown)\n");
-		printf("      Target IP address:  %u.%u.%u.%u\n", arp->arp_tpa[0], arp->arp_tpa[1], arp->arp_tpa[2],
-			   arp->arp_tpa[3]);
+
+		char target_ip_str[INET_ADDRSTRLEN];
+		sprintf(target_ip_str, "%u.%u.%u.%u", arp->arp_tpa[0], arp->arp_tpa[1], arp->arp_tpa[2], arp->arp_tpa[3]);
+		printf("      Target IP address:  %s (%s)\n", target_ip_str, resolve_hostname(target_ip_str));
+
 		printf(COLOR_GREEN " ====================================================\n" COLOR_RESET);
 	}
 	else
@@ -107,6 +109,6 @@ void print_arp_request(t_malcolm *malcolm, struct ether_arp *arp, struct ether_h
 		printf(COLOR_RED "%02x:%02x:%02x:%02x:%02x:%02x\n" COLOR_RESET, arp->arp_sha[0], arp->arp_sha[1],
 			   arp->arp_sha[2], arp->arp_sha[3], arp->arp_sha[4], arp->arp_sha[5]);
 		printf("     - IP adress: ");
-		printf(COLOR_RED " %s\n" COLOR_RESET, ip_str);
+		printf(COLOR_RED " %s (%s)\n" COLOR_RESET, ip_str, resolve_hostname(ip_str));
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 18:15:25 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 18:45:27 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:02:15 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,29 @@ void listen_arp_requests(t_malcolm *malcolm, int sockfd)
 
 		struct ether_arp *arp = (struct ether_arp *)(buffer + sizeof(struct ether_header));
 
+		// Display each ARP packet received in tcpdump style
+		if (malcolm->inspect)
+		{
+			printf("\n");
+			char sender_ip[INET_ADDRSTRLEN];
+			char target_ip[INET_ADDRSTRLEN];
+			sprintf(sender_ip, "%u.%u.%u.%u", arp->arp_spa[0], arp->arp_spa[1], arp->arp_spa[2], arp->arp_spa[3]);
+			sprintf(target_ip, "%u.%u.%u.%u", arp->arp_tpa[0], arp->arp_tpa[1], arp->arp_tpa[2], arp->arp_tpa[3]);
+
+			char *sender_hostname = resolve_hostname(sender_ip);
+			char *target_hostname = resolve_hostname(target_ip);
+
+			if (ntohs(arp->ea_hdr.ar_op) == ARPOP_REQUEST)
+				printf(COLOR_GREEN " ARP, Request who-has %s tell %s, length %zd\n" COLOR_RESET, target_hostname,
+					   sender_hostname, len - sizeof(struct ether_header));
+			else if (ntohs(arp->ea_hdr.ar_op) == ARPOP_REPLY)
+				printf(COLOR_GREEN " ARP, Reply %s is-at %02x:%02x:%02x:%02x:%02x:%02x, length %zd\n" COLOR_RESET,
+					   sender_hostname, arp->arp_sha[0], arp->arp_sha[1], arp->arp_sha[2], arp->arp_sha[3],
+					   arp->arp_sha[4], arp->arp_sha[5], len - sizeof(struct ether_header));
+
+			print_hexdump(buffer, len);
+		}
+
 		// Check ARP request
 		if (ntohs(arp->ea_hdr.ar_op) != ARPOP_REQUEST)
 			continue;
@@ -95,14 +118,14 @@ void listen_arp_requests(t_malcolm *malcolm, int sockfd)
 
 		// Extract target IP
 		char		   ip_str_trgt[INET_ADDRSTRLEN];
-		unsigned char *target_ip = arp->arp_tpa;
-		sprintf(ip_str_trgt, "%u.%u.%u.%u", target_ip[0], target_ip[1], target_ip[2], target_ip[3]);
+		unsigned char *trgt_ip = arp->arp_tpa;
+		sprintf(ip_str_trgt, "%u.%u.%u.%u", trgt_ip[0], trgt_ip[1], trgt_ip[2], trgt_ip[3]);
 
 		// Check if the target IP matches the source
 		if (ft_strncmp(ip_str_trgt, malcolm->src_ip, INET_ADDRSTRLEN) != 0)
 			continue;
 
-		print_arp_request(malcolm, arp, eth, ip_str_src, len, buffer);
+		print_arp_request(malcolm, arp, eth, ip_str_src);
 		break;
 	}
 }

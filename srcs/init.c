@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:26:49 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 18:36:47 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/04 14:55:17 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void init(t_malcolm *malcolm)
 	malcolm->ifa_index = 0;
 	malcolm->verbose = 0;
 	malcolm->flood = 0;
+	malcolm->inspect = 0;
 }
 
 void init_arp_socket(t_malcolm *malcolm, const char *iface_name)

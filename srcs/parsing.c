@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:31:52 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 18:38:10 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/04 15:16:21 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 void get_ip(char *src_ip, char *trgt_ip, t_malcolm *malcolm)
 {
-	if (!resolve_hostname(malcolm->src_ip, src_ip))
+	if (!get_hostname(malcolm->src_ip, src_ip))
 	{
 		fprintf(stderr, "ft_malcolm: unknown host or invalid IP address: '%s'\n", src_ip);
 		free_all(EXIT_FAILURE);
 	}
-	if (!resolve_hostname(malcolm->trgt_ip, trgt_ip))
+	if (!get_hostname(malcolm->trgt_ip, trgt_ip))
 	{
 		fprintf(stderr, "ft_malcolm: unknown host or invalid IP address: '%s'\n", trgt_ip);
 		free_all(EXIT_FAILURE);
@@ -50,7 +50,7 @@ void parsing(int argc, char **argv, t_malcolm *malcolm)
 
 	if (argc == 2 && ft_strncmp(argv[1], "--usage", ft_strlen(argv[1]) + 1) == 0)
 	{
-		printf("Usage: ./ft_malcolm [-v] [-f] <src_ip> <src_mac> <trgt_ip> <trgt_mac>\n");
+		printf("Usage: ./ft_malcolm [-v] [-f] [-i] <src_ip> <src_mac> <trgt_ip> <trgt_mac>\n");
 		free_all(EXIT_SUCCESS);
 	}
 
@@ -61,6 +61,8 @@ void parsing(int argc, char **argv, t_malcolm *malcolm)
 			malcolm->verbose = 1;
 		else if (ft_strncmp(argv[i], "-f", 3) == 0)
 			malcolm->flood = 1;
+		else if (ft_strncmp(argv[i], "-i", 3) == 0)
+			malcolm->inspect = 1;
 		else
 		{
 			fprintf(stderr, "./ft_malcolm: invalid option '%s'\n", argv[i]);

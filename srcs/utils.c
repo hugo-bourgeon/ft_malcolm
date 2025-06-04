@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:27:44 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/04 14:47:48 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/04 15:17:02 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,22 @@ void parse_mac(const char *str, uint8_t mac[6])
 	}
 }
 
-int resolve_hostname(char ip[INET_ADDRSTRLEN], const char *hostname)
+char *resolve_hostname(const char *ip_str)
+{
+	struct sockaddr_in sa;
+	static char hostname[NI_MAXHOST];
+	
+	sa.sin_family = AF_INET;
+	if (inet_pton(AF_INET, ip_str, &sa.sin_addr) != 1)
+		return (char *)ip_str;
+	
+	if (getnameinfo((struct sockaddr *)&sa, sizeof(sa), hostname, sizeof(hostname), NULL, 0, 0) == 0)
+		return hostname;
+	
+	return (char *)ip_str;
+}
+
+int get_hostname(char ip[INET_ADDRSTRLEN], const char *hostname)
 {
 	struct addrinfo hints, *res;
 	char			ipstr[INET_ADDRSTRLEN];
