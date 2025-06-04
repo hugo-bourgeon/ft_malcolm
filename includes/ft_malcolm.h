@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:37:35 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 18:42:10 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/04 14:47:56 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,13 @@ void init_arp_socket(t_malcolm *malcolm, const char *iface_name);
 void parsing(int argc, char **argv, t_malcolm *malcolm);
 
 // utils.c
-void free_all(int exit_code);
-void handle_sigint(int sig);
-int	 hexchar_to_int(char c);
-void parse_mac(const char *str, uint8_t mac[6]);
-int	 resolve_hostname(char ip[INET_ADDRSTRLEN], const char *hostname);
-int	 is_valid_mac(const char *mac);
+void	 free_all(int exit_code);
+void	 handle_sigint(int sig);
+int		 hexchar_to_int(char c);
+uint32_t ip_to_decimal(const char *ip_str);
+void	 parse_mac(const char *str, uint8_t mac[6]);
+int		 resolve_hostname(char ip[INET_ADDRSTRLEN], const char *hostname);
+int		 is_valid_mac(const char *mac);
 
 // print.c
 void print_info(t_malcolm *malcolm);

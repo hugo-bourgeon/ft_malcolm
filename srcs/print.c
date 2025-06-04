@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 18:55:05 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 18:41:52 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/04 14:51:17 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,19 @@
 
 void print_info(t_malcolm *malcolm)
 {
-	printf(COLOR_GREEN "\n Verbose mode  : " COLOR_RESET COLOR_RED "%s\n" COLOR_RESET, malcolm->verbose ? "ON" : "OFF");
-	printf(COLOR_GREEN " Flooding mode : " COLOR_RESET COLOR_RED "%s\n" COLOR_RESET, malcolm->flood ? "ON" : "OFF");
+	printf(COLOR_GREEN "\n Verbose mode :             " COLOR_RESET COLOR_RED "%s\n" COLOR_RESET,
+		   malcolm->verbose ? "ON" : "OFF");
+	printf(COLOR_GREEN " Flooding mode :            " COLOR_RESET COLOR_RED "%s\n" COLOR_RESET,
+		   malcolm->flood ? "ON" : "OFF");
+	printf(COLOR_GREEN " Decimal notation mode :    " COLOR_RESET COLOR_RED "ALWAYS ON\n" COLOR_RESET);
+	printf(COLOR_GREEN " Hostname resolution mode : " COLOR_RESET COLOR_RED "ALWAYS ON\n" COLOR_RESET);
 
-	printf(COLOR_CYAN "\n Spoofing info :\n" COLOR_RESET);
-	printf(COLOR_RED "           - source ip:             %s\n" COLOR_RESET, malcolm->src_ip);
+	printf(COLOR_CYAN "\n Attack info :\n" COLOR_RESET);
+	printf(COLOR_RED "           - source ip:             %s" COLOR_RESET COLOR_GREEN " (%u)\n" COLOR_RESET,
+		   malcolm->src_ip, ip_to_decimal(malcolm->src_ip));
 	printf(COLOR_RED "           - source mac (spoodef):  %s\n" COLOR_RESET, malcolm->src_mac);
-	printf(COLOR_RED "           - target ip:             %s\n" COLOR_RESET, malcolm->trgt_ip);
+	printf(COLOR_RED "           - target ip:             %s" COLOR_RESET COLOR_GREEN " (%u)\n" COLOR_RESET,
+		   malcolm->trgt_ip, ip_to_decimal(malcolm->trgt_ip));
 	printf(COLOR_RED "           - target mac:            %s\n\n" COLOR_RESET, malcolm->trgt_mac);
 }
 

@@ -6,7 +6,7 @@
 /*   By: hubourge <hubourge@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 16:27:44 by hubourge          #+#    #+#             */
-/*   Updated: 2025/06/03 18:42:21 by hubourge         ###   ########.fr       */
+/*   Updated: 2025/06/04 14:47:48 by hubourge         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,13 @@ int hexchar_to_int(char c)
 	if (c >= 'A' && c <= 'F')
 		return c - 'A' + 10;
 	return (-1); // Should not happen
+}
+
+uint32_t ip_to_decimal(const char *ip_str)
+{
+	struct in_addr addr;
+	inet_aton(ip_str, &addr);
+	return ntohl(addr.s_addr);
 }
 
 int is_valid_mac(const char *mac)
@@ -73,7 +80,7 @@ int resolve_hostname(char ip[INET_ADDRSTRLEN], const char *hostname)
 	struct addrinfo hints, *res;
 	char			ipstr[INET_ADDRSTRLEN];
 
-	memset(&hints, 0, sizeof hints);
+	ft_memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_INET;
 
 	if (getaddrinfo(hostname, NULL, &hints, &res) != 0)
